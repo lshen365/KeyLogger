@@ -94,26 +94,70 @@ void findLetterTyped() {
 	DWORD specialKey = 0xBA; 
 	for (int i = 0; i < 37; i++) {
 		if (GetAsyncKeyState(specialKey) & 1) {
-			if (GetKeyState(VK_SHIFT)) {
+			if (GetKeyState(VK_SHIFT) & 0x8000) {
+				switch (specialKey) {
+				case 0xBA:
+					currentSentence += ":";
+					break;
+				case 0xBB:
+					currentSentence += "+";
+					break;
+				case 0xBC:
+					currentSentence += "<";
+					break;
+				case 0xBD:
+					currentSentence += "_";
+					break;
+				case 0xBE:
+					currentSentence += ">";
+					break;
+				case 0xBF:
+					currentSentence += "?";
+					break;
+				case 0xC0:
+					currentSentence += "~";
+					break;
+				case 0xDB:
+					currentSentence += "{";
+					break;
+				case 0xDC:
+					currentSentence += "|";
+					break;
+				case 0xDD:
+					currentSentence += "}";
+					break;
+				case 0xDE:
+					currentSentence += "\"";
+					break;
 
+				default:
+					currentSentence += "ERROR";
+					break;
+				}
 
 			}
 			else {
 				if (i <= 7) {
-					cout << "run" << endl;
 					currentSentence += special[i];
 				
 				}
 				else if (i >= 31) {
 					currentSentence += special[abs(37 - i - 11)];
 				}
-				cout << i << " " << specialKey << endl;
+
 				
 			}
 		}
 		specialKey++;
 	}
-	if (GetAsyncKeyState(VK_RETURN) & 1) {
+
+	if (GetAsyncKeyState(VK_BACK) & 1) {
+		currentSentence = currentSentence.substr(0, currentSentence.length() - 1);
+	}
+	if ((GetAsyncKeyState(VK_SPACE) & 1)) {
+		currentSentence += " ";
+	}
+	if ((GetAsyncKeyState(VK_RETURN) & 1)|| (GetAsyncKeyState(VK_TAB) & 1)) {
 		cout << currentSentence << endl;
 		currentSentence = "";
 		return;
